@@ -17,13 +17,14 @@ int main(int argc, char **argv)
     char *program = *argv++;
     assert(program != NULL);
     
-    char *thetaSpeedArg = *argv++;
-    if (thetaSpeedArg == NULL) {
+    char *thetaArg = *argv++;
+    if (thetaArg == NULL) {
         printf("USAGE: %s <theta_increment>\n", program);
         exit(EXIT_FAILURE);
     }
 
-    float thetaSpeed = 0.01f * atof(thetaSpeedArg);
+    float theta0 = 0.01f * atof(thetaArg);
+
 
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pi Visualization");
     SetTargetFPS(60);
@@ -31,7 +32,8 @@ int main(int argc, char **argv)
 
     Camera2D cam = {0};
     cam.zoom = 1;
-
+    
+    float theta1 = theta0;
     float theta = 0.0f;
 
     float _Complex outerPath[MAX_POINTS];
@@ -59,7 +61,7 @@ int main(int argc, char **argv)
                 cam.zoom = 0.125f;
         }
 
-        theta += thetaSpeed;
+        theta += theta1;
 
         float _Complex innerRod = cexpf(I * theta);
         float _Complex outerRod = cexpf(I * M_PI * theta);
@@ -78,14 +80,14 @@ int main(int argc, char **argv)
 
         if (IsKeyReleased(KEY_N)) {
             pathIndex = 0;
-            thetaSpeed += 1.0f;
-            // thetaSpeed *= 2.0f;
+            theta1 += theta0;
+            // theta *= 2.0f;
         }
 
         if (IsKeyReleased(KEY_B)) {
             pathIndex = 0;
-            thetaSpeed -= 1.0f;
-            // thetaSpeed /= 1.0f;
+            theta1 -= theta0;
+            // theta /= 1.0f;
         }
 
         BeginDrawing();
@@ -115,7 +117,8 @@ int main(int argc, char **argv)
             DrawText("Press ESC to exit", 10, 10, 20, WHITE);
             DrawText(TextFormat("Frame: %i", pathIndex), 10, 40, 20, WHITE);
             DrawText(TextFormat("/%i", MAX_POINTS), 150, 40, 20, WHITE);
-            DrawText(TextFormat("Speed: %f", thetaSpeed), 10, 80, 20, WHITE);
+            DrawText("N -> Next animmation", 10, 70, 20, WHITE);
+            DrawText("B -> Previous animmation", 10, 100, 20, WHITE);
         }
         EndDrawing();
     }
