@@ -1,11 +1,14 @@
 # Pi Irrational Visualization
 
 ```console
-./build.sh && ./main
+./build.sh && ./main <theta0> 
 
 ```
 
 ## Cool numbers to try
  - 40
 
-![alt text](https://github.com/BudgetBytes/Pi-irrational-visualization/blob/main/pi-irrational.png?raw=true)
+## kazam couldn't do better...
+[Kazam_screencast_00000.webm](https://github.com/BudgetBytes/Pi-irrational-visualization/assets/132462571/cce5363c-9b6c-4954-9955-6c1f81e8b29e)
+
+
