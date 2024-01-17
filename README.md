@@ -1,7 +1,7 @@
 # Pi Irrational Visualization
 
 ```console
-./build.sh && ./main
+./build.sh && ./main <theta0> 
 
 ```
 
