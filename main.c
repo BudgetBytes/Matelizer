@@ -56,9 +56,9 @@ int main(int argc, char **argv)
             cam.target = mouseWorldPos;
 
             // zoom
-            cam.zoom += wheel * 0.125f;
-            if (cam.zoom < 0.125f)
-                cam.zoom = 0.125f;
+            cam.zoom += wheel * 1.25f;
+            if (cam.zoom < 1.0f)
+                cam.zoom = 1.0f;
         }
 
         theta += theta1;
@@ -81,13 +81,11 @@ int main(int argc, char **argv)
         if (IsKeyReleased(KEY_N)) {
             pathIndex = 0;
             theta1 += theta0;
-            // theta *= 2.0f;
         }
 
         if (IsKeyReleased(KEY_B)) {
             pathIndex = 0;
             theta1 -= theta0;
-            // theta /= 1.0f;
         }
 
         BeginDrawing();
@@ -102,23 +100,14 @@ int main(int argc, char **argv)
                     DrawLineV(start, end, RAYWHITE);
                 }
 
-                // Vector2 lastOuterPoint = {center.x + crealf(outerPath[pathIndex - 1]) * 100, center.y + cimagf(outerPath[pathIndex - 1]) * 100};
-                // Vector2 outerPoint = {center.x + crealf(outerRod) * 100, center.y + cimagf(outerRod) * 100};
-
-                // DrawLineV(lastOuterPoint, outerPoint, LIGHTGRAY);
-                // DrawLineV(outerPoint, center, LIGHTGRAY);
-
-                // DrawCircle(center.x, center.y , 2, GRAY);
-                // DrawCircleV(lastOuterPoint, 2, GRAY);
-                // DrawCircleV(outerPoint, 2, GRAY);
             }
             EndMode2D();
 
             DrawText("Press ESC to exit", 10, 10, 20, WHITE);
-            DrawText(TextFormat("Frame: %i", pathIndex), 10, 40, 20, WHITE);
-            DrawText(TextFormat("/%i", MAX_POINTS), 150, 40, 20, WHITE);
-            DrawText("N -> Next animmation", 10, 70, 20, WHITE);
-            DrawText("B -> Previous animmation", 10, 100, 20, WHITE);
+            DrawText("N -> Next animmation", 10, 40, 20, WHITE);
+            DrawText("B -> Previous animmation", 10, 70, 20, WHITE);
+            DrawText(TextFormat("Frame: %i", pathIndex), 10, 100, 20, WHITE);
+            DrawText(TextFormat("/%i", MAX_POINTS), 150, 100, 20, WHITE);
         }
         EndDrawing();
     }
