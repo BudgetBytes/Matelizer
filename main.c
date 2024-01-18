@@ -1,9 +1,9 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <assert.h>
 #include <math.h>
 #include <complex.h>
-#include <stdlib.h>
-#include <string.h>
 #include <raylib.h>
 #include "raymath.h"
 
@@ -13,7 +13,7 @@
 
 int main(int argc, char **argv) 
 {
-    (void)argc;
+   (void)argc;
     char *program = *argv++;
     assert(program != NULL);
     
@@ -23,8 +23,11 @@ int main(int argc, char **argv)
         exit(EXIT_FAILURE);
     }
 
-    double theta0 = 0.01l * atol(thetaArg);
-
+    double theta0 = atof(thetaArg);
+    if (theta0 == 0.0l) {
+        printf("ERROR: Invalid theta\n");
+        exit(EXIT_FAILURE);
+    }
 
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pi Visualization");
     SetTargetFPS(60);
@@ -38,6 +41,7 @@ int main(int argc, char **argv)
 
     double _Complex outerPath[MAX_POINTS];
     int pathIndex = 0;
+    bool toggle = 0;
 
     while (!WindowShouldClose()) {
 
@@ -81,13 +85,14 @@ int main(int argc, char **argv)
         if (IsKeyReleased(KEY_N)) {
             pathIndex = 0;
             theta1 += theta0;
-            printf("Theta: %lf\n", theta1);
         }
 
         if (IsKeyReleased(KEY_B)) {
             pathIndex = 0;
             theta1 -= theta0;
         }
+
+        if (IsKeyPressed(KEY_F2)) toggle = !toggle;
 
         BeginDrawing();
         {
@@ -103,13 +108,16 @@ int main(int argc, char **argv)
 
             }
             EndMode2D();
-
-            DrawText("Press ESC to exit", 10, 10, 20, WHITE);
-            DrawText("N -> Next animation", 10, 40, 20, WHITE);
-            DrawText("B -> Previous animation", 10, 70, 20, WHITE);
-            DrawText(TextFormat("Frame: %i", pathIndex), 10, 100, 20, WHITE);
-            DrawText(TextFormat("/%i", MAX_POINTS), 150, 100, 20, WHITE);
-            DrawText(TextFormat("Theta: %lf", theta1), 10, 130, 20, WHITE);
+                
+            if (!toggle) {
+                DrawText("Press ESC to exit", 10, 10, 20, WHITE);
+                DrawText("N -> Next animation", 10, 40, 20, WHITE);
+                DrawText("B -> Previous animation", 10, 70, 20, WHITE);
+                DrawText("F2 -> Toggle this menu", 10, 100, 20, WHITE);
+                DrawText(TextFormat("Frame: %i", pathIndex), 10, 130, 20, WHITE);
+                DrawText(TextFormat("/%i", MAX_POINTS), 150, 130, 20, WHITE);
+                DrawText(TextFormat("Theta: %lf", theta1), 10, 160, 20, WHITE);
+            }
         }
         EndDrawing();
     }
