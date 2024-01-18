@@ -44,7 +44,7 @@ int main(int argc, char **argv)
         // translate based on left click
         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
             Vector2 delta = GetMouseDelta();
-            delta = Vector2Scale(delta, -1.0l / cam.zoom);
+            delta = Vector2Scale(delta, -1.0f / cam.zoom);
             cam.target = Vector2Add(cam.target, delta);
         }
 
@@ -56,9 +56,9 @@ int main(int argc, char **argv)
             cam.target = mouseWorldPos;
 
             // zoom
-            cam.zoom += wheel * 1.25l;
-            if (cam.zoom < 1.0l)
-                cam.zoom = 1.0l;
+            cam.zoom += wheel * 1.25f;
+            if (cam.zoom < 1.0f)
+                cam.zoom = 1.0f;
         }
 
         theta += theta1;
@@ -74,8 +74,8 @@ int main(int argc, char **argv)
         }
 
         Vector2 center = {
-            .x = GetScreenWidth() / 2.0l,
-            .y = GetScreenHeight() / 2.0l,
+            .x = GetScreenWidth() / 2.0f,
+            .y = GetScreenHeight() / 2.0f,
         };
 
         if (IsKeyReleased(KEY_N)) {
