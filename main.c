@@ -23,7 +23,7 @@ int main(int argc, char **argv)
         exit(EXIT_FAILURE);
     }
 
-    double theta0 = 0.01l * atof(thetaArg);
+    double theta0 = 0.01l * atol(thetaArg);
 
 
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pi Visualization");
@@ -63,8 +63,8 @@ int main(int argc, char **argv)
 
         theta += theta1;
 
-        double _Complex innerRod = cexpf(I * theta);
-        double _Complex outerRod = cexpf(I * M_PI * theta);
+        double _Complex innerRod = cexpl(I * theta);
+        double _Complex outerRod = cexpl(I * M_PI * theta);
 
         outerPath[pathIndex] = innerRod + outerRod;
 
