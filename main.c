@@ -5,12 +5,10 @@
 #include <math.h>
 #include <complex.h>
 #include <raylib.h>
-#include "raymath.h"
+#include <raymath.h>
 
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 600
-#define MAX_POINTS 50000
-
+#define SCREEN_WIDTH 1200
+#define SCREEN_HEIGHT 800
 
 int main(int argc, char **argv) 
 {
@@ -31,6 +29,7 @@ int main(int argc, char **argv)
     }
 
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pi Visualization");
+
     SetTargetFPS(60);
     SetWindowState(FLAG_WINDOW_RESIZABLE);
 
@@ -38,10 +37,8 @@ int main(int argc, char **argv)
     cam.zoom = 1;
     
     double theta1 = theta0;
-    double theta = 0.0l;
 
-    double _Complex outerPath[MAX_POINTS];
-    int pathIndex = 0;
+    int frameCount = 0;
     bool toggle = 0;
 
     while (!WindowShouldClose()) {
@@ -66,48 +63,42 @@ int main(int argc, char **argv)
                 cam.zoom = 1.0f;
         }
 
-        theta += theta1;
-
-        double _Complex innerRod = cexpl(I * theta);
-        double _Complex outerRod = cexpl(I * M_PI * theta);
-
-        outerPath[pathIndex] = innerRod + outerRod;
-
-        pathIndex ++;
-        if (pathIndex >= MAX_POINTS) {
-            pathIndex = 0;
-        }
-
-        Vector2 center = {
-            .x = GetScreenWidth() / 2.0f,
-            .y = GetScreenHeight() / 2.0f,
-        };
-
         if (IsKeyReleased(KEY_N)) {
-            pathIndex = 0;
+            frameCount = 0;
             theta1 += theta0;
         }
 
         if (IsKeyReleased(KEY_B)) {
-            pathIndex = 0;
+            frameCount = 0;
             theta1 -= theta0;
         }
 
         if (IsKeyPressed(KEY_F2)) toggle = !toggle;
 
+        Vector2 center = {
+            .x = SCREEN_WIDTH / 2.0f,
+            .y = SCREEN_HEIGHT / 2.0f,
+        };
+
         BeginDrawing();
         {
-
             ClearBackground(BLACK);
 
             BeginMode2D(cam);
             {
-                for (int i = 1; i < pathIndex; i++) {
-                    Vector2 start = {center.x + crealf(outerPath[i - 1]) * 100, center.y + cimagf(outerPath[i - 1]) * 100};
-                    Vector2 end = {center.x + crealf(outerPath[i]) * 100, center.y  + cimagf(outerPath[i]) * 100};
+                // DrawTexture(target.texture, 0, 0, RAYWHITE);
+                double theta = 0.0l;
+                for (int i = 0 ; i < frameCount; ++i) {
+
+                    double _Complex prevPoint = cexpl(I * theta) + cexpl(I * M_PI * theta);
+                    theta += theta1;
+                    double _Complex point = cexpl(I * theta) + cexpl(I * M_PI * theta);
+
+                    Vector2 start = {center.x + crealf(prevPoint) * 100, center.y + cimagf(prevPoint) * 100 };
+                    Vector2 end = {center.x + crealf(point) * 100, center.y  + cimagf(point) * 100 };
+        
                     DrawLineV(start, end, RAYWHITE);
                 }
-
             }
             EndMode2D();
                 
@@ -116,15 +107,17 @@ int main(int argc, char **argv)
                 DrawText("N -> Next animation", 10, 40, 20, WHITE);
                 DrawText("B -> Previous animation", 10, 70, 20, WHITE);
                 DrawText("F2 -> Toggle this menu", 10, 100, 20, WHITE);
-                DrawText(TextFormat("Frame: %i", pathIndex), 10, 130, 20, WHITE);
-                DrawText(TextFormat("/%i", MAX_POINTS), 150, 130, 20, WHITE);
+                DrawText(TextFormat("Frame: %i", frameCount), 10, 130, 20, WHITE);
                 DrawText(TextFormat("Theta: %lf", theta1), 10, 160, 20, WHITE);
             }
         }
+        
         EndDrawing();
+        frameCount++;
     }
 
     CloseWindow();
 
     return 0;
 }
+

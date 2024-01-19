@@ -67,7 +67,6 @@ int main(int argc, char **argv) {
                 if (i % 2 == 0) {
                     DrawCircle(center.x + polar.x, center.y + polar.y, 2/cam.zoom, RAYWHITE);
                 } else {
-
                     DrawCircle(center.x + polar.x, center.y + polar.y, 2/cam.zoom, BLUE);
                 }
             }
