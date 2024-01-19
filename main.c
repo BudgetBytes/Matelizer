@@ -11,6 +11,7 @@
 #define SCREEN_HEIGHT 600
 #define MAX_POINTS 50000
 
+
 int main(int argc, char **argv) 
 {
    (void)argc;
@@ -72,7 +73,7 @@ int main(int argc, char **argv)
 
         outerPath[pathIndex] = innerRod + outerRod;
 
-        pathIndex++;
+        pathIndex ++;
         if (pathIndex >= MAX_POINTS) {
             pathIndex = 0;
         }
@@ -96,6 +97,7 @@ int main(int argc, char **argv)
 
         BeginDrawing();
         {
+
             ClearBackground(BLACK);
 
             BeginMode2D(cam);
