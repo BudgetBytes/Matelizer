@@ -28,7 +28,7 @@ int main(int argc, char **argv)
         exit(EXIT_FAILURE);
     }
 
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pi Visualization");
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pi Irrationality");
 
     SetTargetFPS(60);
     SetWindowState(FLAG_WINDOW_RESIZABLE);
@@ -39,8 +39,9 @@ int main(int argc, char **argv)
     double theta1 = theta0;
 
     int frameCount = 0;
-    bool toggle = 0;
-
+    bool toggle = false;
+    bool autom = true;
+    
     while (!WindowShouldClose()) {
 
         // translate based on left click
@@ -75,6 +76,13 @@ int main(int argc, char **argv)
 
         if (IsKeyPressed(KEY_F2)) toggle = !toggle;
 
+        if (IsKeyPressed(KEY_A)) autom = !autom;
+            
+        if (frameCount > 1000 && autom) {
+            frameCount = 0;
+            theta1 += theta0;
+        }
+
         Vector2 center = {
             .x = SCREEN_WIDTH / 2.0f,
             .y = SCREEN_HEIGHT / 2.0f,
@@ -86,7 +94,6 @@ int main(int argc, char **argv)
 
             BeginMode2D(cam);
             {
-                // DrawTexture(target.texture, 0, 0, RAYWHITE);
                 double theta = 0.0l;
                 for (int i = 0 ; i < frameCount; ++i) {
 
@@ -104,11 +111,13 @@ int main(int argc, char **argv)
                 
             if (!toggle) {
                 DrawText("Press ESC to exit", 10, 10, 20, WHITE);
-                DrawText("N -> Next animation", 10, 40, 20, WHITE);
-                DrawText("B -> Previous animation", 10, 70, 20, WHITE);
-                DrawText("F2 -> Toggle this menu", 10, 100, 20, WHITE);
-                DrawText(TextFormat("Frame: %i", frameCount), 10, 130, 20, WHITE);
-                DrawText(TextFormat("Theta: %lf", theta1), 10, 160, 20, WHITE);
+                DrawText("A -> Automatic animation", 10, 40, 20, WHITE);
+                DrawText("N -> Next animation", 10, 70, 20, WHITE);
+                DrawText("B -> Previous animation", 10, 100, 20, WHITE);
+                DrawText("F2 -> Toggle this menu", 10, 130, 20, WHITE);
+                DrawText(TextFormat("Frame: %i", frameCount), 10, 160, 20, WHITE);
+                DrawText(TextFormat("Theta: %lf", theta1), 10, 190, 20, WHITE);
+                DrawText(TextFormat("Automatic: %s", autom ? "True" : "False"), 10, 220, 20, WHITE);
             }
         }
         
