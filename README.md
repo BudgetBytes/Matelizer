@@ -1,4 +1,4 @@
-# Pi Irrational Visualization
+# Mathematic visualization
 
 ```console
 ./build.sh && ./main <theta0> 
