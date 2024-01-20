@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
+#include <time.h>
 #include <assert.h>
 #include <math.h>
 #include <complex.h>
@@ -75,11 +77,18 @@ int main(void)
             stopFrameCount = false;
         }
 
+        if (IsKeyPressed(KEY_S)) {
+            time_t t;   
+            time(&t);   
+
+            TakeScreenshot(TextFormat("matelizer-%s.png", ctime(&t)));
+        }
+
         if (IsKeyPressed(KEY_F2)) toggle = !toggle;
 
         if (IsKeyPressed(KEY_A)) autom = !autom;
 
-        if (IsKeyPressed(KEY_S)) spinOnCenter = !spinOnCenter;
+        if (IsKeyPressed(KEY_R)) spinOnCenter = !spinOnCenter;
 
         if (IsKeyPressed(KEY_SPACE)) stopFrameCount = !stopFrameCount;
             
@@ -155,12 +164,13 @@ int main(void)
                 DrawText("A -> Automatic animation", 10, 70, 20, WHITE);
                 DrawText("N -> Next animation", 10, 100, 20, WHITE);
                 DrawText("B -> Previous animation", 10, 130, 20, WHITE);
-                DrawText("S -> Spin on center", 10, 160, 20, WHITE);
-                DrawText("SPACE -> Stop incrementing", 10, 190, 20, WHITE);
-                DrawText("F2 -> Toggle this menu", 10, 220, 20, WHITE);
-                DrawText(TextFormat("Frame: %i", frameCount), 10, 250, 20, WHITE);
-                DrawText(TextFormat("Theta: %lf", theta1), 10, 280, 20, WHITE);
-                DrawText(TextFormat("Automatic: %s", autom ? "True" : "False"), 10, 310, 20, WHITE);
+                DrawText("R -> Rotate on center", 10, 160, 20, WHITE);
+                DrawText("S -> Take screenshot", 10, 190, 20, WHITE);
+                DrawText("SPACE -> Stop incrementing", 10, 220, 20, WHITE);
+                DrawText("F2 -> Toggle this menu", 10, 250, 20, WHITE);
+                DrawText(TextFormat("Frame: %i", frameCount), 10, 280, 20, WHITE);
+                DrawText(TextFormat("Theta: %lf", theta1), 10, 310, 20, WHITE);
+                DrawText(TextFormat("Automatic: %s", autom ? "True" : "False"), 10, 340, 20, WHITE);
 
                 DrawRectangleRec(textBox, LIGHTGRAY);
                 if (mouseOnText) DrawRectangleLines((int)textBox.x, (int)textBox.y, (int)textBox.width, (int)textBox.height, RAYWHITE);
