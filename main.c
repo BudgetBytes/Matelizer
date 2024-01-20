@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 #include <ctype.h>
 #include <time.h>
 #include <assert.h>
@@ -13,6 +14,7 @@
 #define SCREEN_WIDTH    1200
 #define SCREEN_HEIGHT   800
 #define MAX_INPUT_CHARS 8
+
 
 int main(void) 
 {
@@ -80,8 +82,11 @@ int main(void)
         if (IsKeyPressed(KEY_S)) {
             time_t t;   
             time(&t);   
-
-            TakeScreenshot(TextFormat("matelizer-%s.png", ctime(&t)));
+            const char *filename = TextFormat("matelizer-%s.png", ctime(&t));
+            TakeScreenshot(filename);
+            if (rename(filename, TextFormat("./screenshots/%s", filename)) < 0) {
+                printf("ERROR: Failed to move file: %s", strerror(errno));
+            }
         }
 
         if (IsKeyPressed(KEY_F2)) toggle = !toggle;
