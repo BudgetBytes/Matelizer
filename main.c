@@ -7,26 +7,21 @@
 #include <raylib.h>
 #include <raymath.h>
 
-#define SCREEN_WIDTH 1200
-#define SCREEN_HEIGHT 800
+#define SCREEN_WIDTH    1200
+#define SCREEN_HEIGHT   800
+#define MAX_INPUT_CHARS 8
 
-int main(int argc, char **argv) 
+
+int main(void) 
 {
-   (void)argc;
-    char *program = *argv++;
-    assert(program != NULL);
-    
-    char *thetaArg = *argv++;
-    if (thetaArg == NULL) {
-        printf("USAGE: %s <theta_increment>\n", program);
-        exit(EXIT_FAILURE);
-    }
+   
+    char thetaInput[MAX_INPUT_CHARS + 1] = "\0";
+    int letterCount = 0;
 
-    double theta0 = atof(thetaArg);
-    if (theta0 == 0.0l) {
-        printf("ERROR: Invalid theta\n");
-        exit(EXIT_FAILURE);
-    }
+    Rectangle textBox = {SCREEN_WIDTH - 220, 10, 200, 50};
+    bool mouseOnText = false;
+
+    double theta0 = 3.14l;
 
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pi Irrationality");
 
@@ -42,6 +37,9 @@ int main(int argc, char **argv)
     bool toggle = false;
     bool autom = true;
     
+    double theta = 0.0l;
+    bool spinOnCenter = false;
+
     while (!WindowShouldClose()) {
 
         // translate based on left click
@@ -77,6 +75,8 @@ int main(int argc, char **argv)
         if (IsKeyPressed(KEY_F2)) toggle = !toggle;
 
         if (IsKeyPressed(KEY_A)) autom = !autom;
+
+        if (IsKeyPressed(KEY_S)) spinOnCenter = !spinOnCenter;
             
         if (frameCount > 1000 && autom) {
             frameCount = 0;
@@ -88,13 +88,52 @@ int main(int argc, char **argv)
             .y = SCREEN_HEIGHT / 2.0f,
         };
 
+        if (CheckCollisionPointRec(GetMousePosition(), textBox)) mouseOnText = true;
+        else mouseOnText = false;
+
+        if (mouseOnText)
+        {
+            // Set the window's cursor to the I-Beam
+            SetMouseCursor(MOUSE_CURSOR_IBEAM);
+
+            // Get char pressed (unicode character) on the queue
+            int key = GetCharPressed();
+
+            // Check if more characters have been pressed on the same frame
+            while (key > 0)
+            {
+                // NOTE: Only allow keys in range [32..125]
+                if ((((key >= 48) && (key <= 57)) || key == 46) && (letterCount < MAX_INPUT_CHARS))
+                {
+                    thetaInput[letterCount] = (char)key;
+                    thetaInput[letterCount+1] = '\0'; // Add null terminator at the end of the string.
+                    letterCount++;
+                }
+
+                key = GetCharPressed();  // Check next character in the queue
+            }
+
+            if (IsKeyPressed(KEY_BACKSPACE))
+            {
+                letterCount--;
+                if (letterCount < 0) letterCount = 0;
+                thetaInput[letterCount] = '\0';
+            }
+            if (IsKeyPressed(KEY_ENTER)) {
+                theta0 = atof(thetaInput);
+                theta1 = theta0;
+                frameCount = 0;
+            }
+        }
+        else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+
         BeginDrawing();
         {
             ClearBackground(BLACK);
 
             BeginMode2D(cam);
             {
-                double theta = 0.0l;
+                if (!spinOnCenter) theta = 0.0l;
                 for (int i = 0 ; i < frameCount; ++i) {
 
                     double _Complex prevPoint = cexpl(I * theta) + cexpl(I * M_PI * theta);
@@ -108,20 +147,29 @@ int main(int argc, char **argv)
                 }
             }
             EndMode2D();
+
                 
             if (!toggle) {
                 DrawText("Press ESC to exit", 10, 10, 20, WHITE);
                 DrawText("A -> Automatic animation", 10, 40, 20, WHITE);
                 DrawText("N -> Next animation", 10, 70, 20, WHITE);
                 DrawText("B -> Previous animation", 10, 100, 20, WHITE);
-                DrawText("F2 -> Toggle this menu", 10, 130, 20, WHITE);
-                DrawText(TextFormat("Frame: %i", frameCount), 10, 160, 20, WHITE);
-                DrawText(TextFormat("Theta: %lf", theta1), 10, 190, 20, WHITE);
-                DrawText(TextFormat("Automatic: %s", autom ? "True" : "False"), 10, 220, 20, WHITE);
+                DrawText("S -> Spin on center", 10, 130, 20, WHITE);
+                DrawText("F2 -> Toggle this menu", 10, 160, 20, WHITE);
+                DrawText(TextFormat("Frame: %i", frameCount), 10, 190, 20, WHITE);
+                DrawText(TextFormat("Theta: %lf", theta1), 10, 220, 20, WHITE);
+                DrawText(TextFormat("Automatic: %s", autom ? "True" : "False"), 10, 250, 20, WHITE);
+
+                DrawRectangleRec(textBox, LIGHTGRAY);
+                if (mouseOnText) DrawRectangleLines((int)textBox.x, (int)textBox.y, (int)textBox.width, (int)textBox.height, RAYWHITE);
+                else DrawRectangleLines((int)textBox.x, (int)textBox.y, (int)textBox.width, (int)textBox.height, DARKGRAY);
+
+                DrawText(thetaInput, (int)textBox.x + 5, (int)textBox.y + 8, 40, BLACK);
             }
         }
         
         EndDrawing();
+        WaitTime(0.01);
         frameCount++;
     }
 
