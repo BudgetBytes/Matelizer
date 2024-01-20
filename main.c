@@ -18,7 +18,7 @@ int main(void)
     char thetaInput[MAX_INPUT_CHARS + 1] = "\0";
     int letterCount = 0;
 
-    Rectangle textBox = {SCREEN_WIDTH - 220, 10, 200, 50};
+    Rectangle textBox = {10, 10, 200, 50};
     bool mouseOnText = false;
 
     double theta0 = 3.14l;
@@ -39,6 +39,7 @@ int main(void)
     
     double theta = 0.0l;
     bool spinOnCenter = false;
+    bool stopFrameCount = false;
 
     while (!WindowShouldClose()) {
 
@@ -65,11 +66,13 @@ int main(void)
         if (IsKeyReleased(KEY_N)) {
             frameCount = 0;
             theta1 += theta0;
+            stopFrameCount = false;
         }
 
         if (IsKeyReleased(KEY_B)) {
             frameCount = 0;
             theta1 -= theta0;
+            stopFrameCount = false;
         }
 
         if (IsKeyPressed(KEY_F2)) toggle = !toggle;
@@ -77,10 +80,13 @@ int main(void)
         if (IsKeyPressed(KEY_A)) autom = !autom;
 
         if (IsKeyPressed(KEY_S)) spinOnCenter = !spinOnCenter;
+
+        if (IsKeyPressed(KEY_SPACE)) stopFrameCount = !stopFrameCount;
             
         if (frameCount > 1000 && autom) {
             frameCount = 0;
             theta1 += theta0;
+            stopFrameCount = false;
         }
 
         Vector2 center = {
@@ -93,24 +99,19 @@ int main(void)
 
         if (mouseOnText)
         {
-            // Set the window's cursor to the I-Beam
             SetMouseCursor(MOUSE_CURSOR_IBEAM);
-
-            // Get char pressed (unicode character) on the queue
             int key = GetCharPressed();
 
-            // Check if more characters have been pressed on the same frame
             while (key > 0)
             {
-                // NOTE: Only allow keys in range [32..125]
                 if ((((key >= 48) && (key <= 57)) || key == 46) && (letterCount < MAX_INPUT_CHARS))
                 {
                     thetaInput[letterCount] = (char)key;
-                    thetaInput[letterCount+1] = '\0'; // Add null terminator at the end of the string.
+                    thetaInput[letterCount+1] = '\0'; 
                     letterCount++;
                 }
 
-                key = GetCharPressed();  // Check next character in the queue
+                key = GetCharPressed();  
             }
 
             if (IsKeyPressed(KEY_BACKSPACE))
@@ -150,15 +151,16 @@ int main(void)
 
                 
             if (!toggle) {
-                DrawText("Press ESC to exit", 10, 10, 20, WHITE);
-                DrawText("A -> Automatic animation", 10, 40, 20, WHITE);
-                DrawText("N -> Next animation", 10, 70, 20, WHITE);
-                DrawText("B -> Previous animation", 10, 100, 20, WHITE);
-                DrawText("S -> Spin on center", 10, 130, 20, WHITE);
-                DrawText("F2 -> Toggle this menu", 10, 160, 20, WHITE);
-                DrawText(TextFormat("Frame: %i", frameCount), 10, 190, 20, WHITE);
-                DrawText(TextFormat("Theta: %lf", theta1), 10, 220, 20, WHITE);
-                DrawText(TextFormat("Automatic: %s", autom ? "True" : "False"), 10, 250, 20, WHITE);
+                DrawText("Press ESC to exit", 10, 40, 20, WHITE);
+                DrawText("A -> Automatic animation", 10, 70, 20, WHITE);
+                DrawText("N -> Next animation", 10, 100, 20, WHITE);
+                DrawText("B -> Previous animation", 10, 130, 20, WHITE);
+                DrawText("S -> Spin on center", 10, 160, 20, WHITE);
+                DrawText("SPACE -> Stop incrementing", 10, 190, 20, WHITE);
+                DrawText("F2 -> Toggle this menu", 10, 220, 20, WHITE);
+                DrawText(TextFormat("Frame: %i", frameCount), 10, 250, 20, WHITE);
+                DrawText(TextFormat("Theta: %lf", theta1), 10, 280, 20, WHITE);
+                DrawText(TextFormat("Automatic: %s", autom ? "True" : "False"), 10, 310, 20, WHITE);
 
                 DrawRectangleRec(textBox, LIGHTGRAY);
                 if (mouseOnText) DrawRectangleLines((int)textBox.x, (int)textBox.y, (int)textBox.width, (int)textBox.height, RAYWHITE);
@@ -170,7 +172,7 @@ int main(void)
         
         EndDrawing();
         WaitTime(0.01);
-        frameCount++;
+        if (!stopFrameCount) frameCount++;
     }
 
     CloseWindow();
