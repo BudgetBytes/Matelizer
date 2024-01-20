@@ -14,7 +14,6 @@
  - (ln(2)): 0.69314718055994530942
  - (ln(10)): 2.30258509299404568402
 
-## kazam couldn't do better...
-[Kazam_screencast_00000.webm](https://github.com/BudgetBytes/Pi-irrational-visualization/assets/132462571/cce5363c-9b6c-4954-9955-6c1f81e8b29e)
 
+https://github.com/BudgetBytes/Matelizer/assets/132462571/a7874d53-bb0c-435a-b442-370eb0e3f8b4
 
