@@ -1,7 +1,7 @@
 # Mathematic visualization
 
 ```console
-./build.sh && ./main <theta0> 
+./build.sh && ./main 
 
 ```
 
