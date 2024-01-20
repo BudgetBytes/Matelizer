@@ -15,6 +15,26 @@
 #define SCREEN_HEIGHT   800
 #define MAX_INPUT_CHARS 8
 
+void generate_uuid(char* str) {
+    srand(time(NULL));
+    for (int i = 0; i < 36; ++i) {
+        if (i == 8 || i == 13 || i == 18 || i == 23) {
+            str[i] = '-';
+        } else if (i == 14) {
+            str[i] = '4';
+        } else {
+            int random = rand() % 16;
+            if (random >= 10) {
+                char letter = 'A' + (random - 10);
+                str[i] = letter;
+            } else {
+                char digit = '0' + random;
+                str[i] = digit;
+            }
+        }
+    }
+    str[36] = '\0';
+}
 
 int main(void) 
 {
@@ -79,10 +99,13 @@ int main(void)
             stopFrameCount = false;
         }
 
+        
         if (IsKeyPressed(KEY_S)) {
-            time_t t;   
-            time(&t);   
-            const char *filename = TextFormat("matelizer-%s.png", ctime(&t));
+            char uuid_str[37];
+            generate_uuid(uuid_str);
+
+            const char *filename = TextFormat("./screenshots/%s.png", uuid_str);
+
             TakeScreenshot(filename);
             if (rename(filename, TextFormat("./screenshots/%s", filename)) < 0) {
                 printf("ERROR: Failed to move file: %s", strerror(errno));
@@ -194,4 +217,3 @@ int main(void)
 
     return 0;
 }
-
