@@ -7,10 +7,10 @@
 #include <raylib.h>
 #include <raymath.h>
 
+
 #define SCREEN_WIDTH    1200
 #define SCREEN_HEIGHT   800
 #define MAX_INPUT_CHARS 8
-
 
 int main(void) 
 {
@@ -25,7 +25,7 @@ int main(void)
 
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pi Irrationality");
 
-    SetTargetFPS(60);
+    SetTargetFPS(40);
     SetWindowState(FLAG_WINDOW_RESIZABLE);
 
     Camera2D cam = {0};
