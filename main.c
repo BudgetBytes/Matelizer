@@ -104,7 +104,7 @@ int main(void)
             char uuid_str[37];
             generate_uuid(uuid_str);
 
-            const char *filename = TextFormat("./screenshots/%s.png", uuid_str);
+            const char *filename = TextFormat("matelizer-%s.png", uuid_str);
 
             TakeScreenshot(filename);
             if (rename(filename, TextFormat("./screenshots/%s", filename)) < 0) {
