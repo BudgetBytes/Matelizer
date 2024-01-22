@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,20 +11,20 @@
 #include <raylib.h>
 #include <raymath.h>
 
-
 #define SCREEN_WIDTH    1200
 #define SCREEN_HEIGHT   800
 #define MAX_INPUT_CHARS 8
+#define UUID_LEN        37
 
 void generate_uuid(char* str) {
     srand(time(NULL));
-    for (int i = 0; i < 36; ++i) {
+    for (size_t i = 0; i < UUID_LEN - 1; ++i) {
         if (i == 8 || i == 13 || i == 18 || i == 23) {
             str[i] = '-';
         } else if (i == 14) {
             str[i] = '4';
         } else {
-            int random = rand() % 16;
+            size_t random = rand() % 16;
             if (random >= 10) {
                 char letter = 'A' + (random - 10);
                 str[i] = letter;
@@ -33,12 +34,12 @@ void generate_uuid(char* str) {
             }
         }
     }
-    str[36] = '\0';
+    str[UUID_LEN - 1] = '\0';
 }
+
 
 int main(void) 
 {
-   
     char thetaInput[MAX_INPUT_CHARS + 1] = "\0";
     int letterCount = 0;
 
@@ -47,7 +48,7 @@ int main(void)
 
     double theta0 = 3.14l;
 
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pi Irrationality");
+   InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pi Irrationality");
 
     SetTargetFPS(40);
     SetWindowState(FLAG_WINDOW_RESIZABLE);
@@ -57,7 +58,7 @@ int main(void)
     
     double theta1 = theta0;
 
-    int frameCount = 0;
+    size_t frameCount = 0;
     bool toggle = false;
     bool autom = true;
     
@@ -101,7 +102,7 @@ int main(void)
 
         
         if (IsKeyPressed(KEY_S)) {
-            char uuid_str[37];
+            char uuid_str[UUID_LEN];
             generate_uuid(uuid_str);
 
             const char *filename = TextFormat("matelizer-%s.png", uuid_str);
@@ -137,7 +138,7 @@ int main(void)
         if (mouseOnText)
         {
             SetMouseCursor(MOUSE_CURSOR_IBEAM);
-            int key = GetCharPressed();
+            size_t key = GetCharPressed();
 
             while (key > 0)
             {
@@ -157,6 +158,7 @@ int main(void)
                 if (letterCount < 0) letterCount = 0;
                 thetaInput[letterCount] = '\0';
             }
+
             if (IsKeyPressed(KEY_ENTER)) {
                 theta0 = atof(thetaInput);
                 theta1 = theta0;
@@ -172,7 +174,8 @@ int main(void)
             BeginMode2D(cam);
             {
                 if (!spinOnCenter) theta = 0.0l;
-                for (int i = 0 ; i < frameCount; ++i) {
+
+                for (size_t i = 0 ; i < frameCount; ++i) {
 
                     double _Complex prevPoint = cexpl(I * theta) + cexpl(I * M_PI * theta);
                     theta += theta1;
@@ -185,7 +188,6 @@ int main(void)
                 }
             }
             EndMode2D();
-
                 
             if (!toggle) {
                 DrawText("Press ESC to exit", 10, 40, 20, WHITE);
@@ -212,7 +214,6 @@ int main(void)
         WaitTime(0.01);
         if (!stopFrameCount) frameCount++;
     }
-
     CloseWindow();
 
     return 0;
