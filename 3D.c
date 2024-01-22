@@ -58,7 +58,6 @@ int main(void)
     camera.fovy = 45.0f;                                // Camera field-of-view Y
     camera.projection = CAMERA_PERSPECTIVE;             // Camera projection type
     
-    DisableCursor();
 
     double theta1 = theta0;
 
@@ -162,16 +161,19 @@ int main(void)
                     double _Complex prevPoint = cexpl(I * theta) + cexpl(I * M_PI * theta);
                     theta += theta1;
                     double _Complex point = cexpl(I * theta) + cexpl(I * M_PI * theta);
-                    double prevX =  crealf(prevPoint);
-                    double prevY = cimagf(prevPoint);
-                    double prevZ = carg(prevPoint); 
-                    double currX =  crealf(point);
-                    double currY = cimagf(point);
-                    double currZ = carg(point);
 
-                    Vector3 start = {.x = prevX, .y = prevY, .z = prevZ};
-                    Vector3 end = {.x = currX, .y = currY, .z = currZ};
-        
+                    Vector3 start = {
+                        .x = crealf(prevPoint),
+                        .y = cimagf(prevPoint),
+                        .z = cabs(prevPoint), 
+                    };
+
+                    Vector3 end = {
+                        .x = crealf(point),
+                        .y = cimagf(point),
+                        .z = cabs(point),
+                    };
+
                     DrawLine3D(start, end, RAYWHITE);
                 }
             }
