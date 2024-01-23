@@ -14,6 +14,4 @@
  - (ln(2)): 0.69314718055994530942
  - (ln(10)): 2.30258509299404568402
 
-
-https://github.com/BudgetBytes/Matelizer/assets/132462571/a7874d53-bb0c-435a-b442-370eb0e3f8b4
-
+![alt text](https://github.com/BudgetBytes/Matelizer/blob/main/git.png?raw=true)
