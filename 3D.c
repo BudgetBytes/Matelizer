@@ -2,9 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#include <ctype.h>
 #include <time.h>
-#include <assert.h>
 #include <math.h>
 #include <complex.h>
 #include <raylib.h>
@@ -14,9 +12,10 @@
 #define SCREEN_HEIGHT   800
 #define MAX_INPUT_CHARS 8
 #define UUID_LEN        37
-#define MAX_COLORS      8
-
-const Color COLORS[MAX_COLORS] = {RAYWHITE, GOLD, PINK, LIME, SKYBLUE, VIOLET, BEIGE};
+#define MAX_COLORS      4 // +1 RAYWHITE
+#define SKY             CLITERAL (Color) {96,156,189,255}
+#define MARINE          CLITERAL (Color) {126, 242, 167, 60}
+#define CBLUE           CLITERAL (Color) {0, 45, 150, 70}
 
 void generate_uuid(char* str) {
     srand(time(NULL));
@@ -41,6 +40,7 @@ void generate_uuid(char* str) {
 
 int main(void) 
 {
+    const Color COLORS[MAX_COLORS] = {RAYWHITE, SKY, MARINE, CBLUE};
     char thetaInput[MAX_INPUT_CHARS + 1] = "\0";
     int letterCount = 0;
 
@@ -63,7 +63,7 @@ int main(void)
 
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pi Irrationality");
 
-    SetTargetFPS(40);
+    SetTargetFPS(60);
     SetWindowState(FLAG_WINDOW_RESIZABLE);
 
     Camera3D camera = { 0 };
@@ -193,12 +193,23 @@ int main(void)
             {
                 if (!spinOnCenter) theta = 0.0l;
 
+                double radius = 1.0f;
                 for (size_t i = 0 ; i < frameCount; ++i) {
 
                     double _Complex prevPoint = cexpl(I * theta) + cexpl(I * M_PI * theta);
                     theta += theta1;
                     double _Complex point = cexpl(I * theta) + cexpl(I * M_PI * theta);
+                    // Vector3 start = {
+                    //     .x = radius * sin(cimag(prevPoint)) * cos(creal(prevPoint)),
+                    //     .y = radius * sin(cimag(prevPoint)) * sin(creal(prevPoint)),
+                    //     .z = radius * cos(cimag(prevPoint)),
+                    // };
 
+                    // Vector3 end = {
+                    //     .x = radius * sin(cimag(point)) * cos(creal(point)),
+                    //     .y = radius * sin(cimag(point)) * sin(creal(point)),
+                    //     .z = radius * cos(cimag(point)),
+                    // };
                     Vector3 start = {
                         .x = crealf(prevPoint),
                         .y = cimagf(prevPoint),
@@ -208,10 +219,11 @@ int main(void)
                     Vector3 end = {
                         .x = crealf(point),
                         .y = cimagf(point),
-                        .z = cabs(point),
+                        .z = cabs(prevPoint),
                     };
-
+                  
                     DrawLine3D(start, end, COLORS[colorSelected]);
+                    DrawLine3D(Vector3Negate(start), Vector3Negate(end), COLORS[colorSelected]);
                 }
             }
             EndMode3D();
